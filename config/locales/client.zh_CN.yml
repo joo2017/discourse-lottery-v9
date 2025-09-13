@@ -1,0 +1,8 @@
+zh_CN:
+  js:
+    lottery:
+      builder:
+        attach: "创建抽奖"
+        title: "创建抽奖活动"
+        draw_time: "开奖时间"
+        create: "创建"
