@@ -46,4 +46,62 @@ after_initialize do
   # end
 
   # 用户权限
-  add_to_class(:user, :can_create_discourse_p
+  add_to_class(:user, :can_create_discourse_post_lottery?) do
+    return @can_create_discourse_post_lottery if defined?(@can_create_discourse_post_lottery)
+    @can_create_discourse_post_lottery =
+      begin
+        return true if staff?
+        # 注意: 这里的设置名应该是 lottery_allowed_on_groups
+        # 你之前的代码中写的是 lottery_allowed_on_groups
+        allowed_groups = SiteSetting.lottery_allowed_on_groups.to_s.split("|").compact
+        allowed_groups.present? &&
+          (
+            allowed_groups.include?(Group::AUTO_GROUPS[:everyone].to_s) ||
+              groups.where(id: allowed_groups).exists?
+          )
+      rescue StandardError
+        false
+      end
+  end
+
+  add_to_class(:guardian, :can_create_discourse_post_lottery?) do
+    user && user.can_create_discourse_post_lottery?
+  end
+
+  add_to_class(:guardian, :can_act_on_discourse_post_lottery?) do |lottery|
+    # 确保 lottery 对象存在并且有关联的 post
+    user && lottery&.post && (user.staff? || Guardian.new(user).can_edit_post?(lottery.post))
+  end
+
+  add_to_serializer(:current_user, :can_create_discourse_post_lottery) do
+    object.can_create_discourse_post_lottery?
+  end
+
+  # 前端需要的序列化
+  add_to_serializer(
+    :post,
+    :lottery,
+    include_condition: -> do
+      # 检查 object.lottery 是否存在
+      SiteSetting.lottery_enabled && object&.lottery && !object.deleted_at.present?
+    end,
+  ) { object.lottery ? DiscoursePostLottery::LotterySerializer.new(object.lottery, scope: scope, root: false) : nil }
+
+  # Topic自定义字段（前端显示需要）
+  add_preloaded_topic_list_custom_field DiscoursePostLottery::TOPIC_POST_LOTTERY_STARTS_AT
+
+  add_to_class(:topic, :lottery_starts_at) do
+    @lottery_starts_at ||= custom_fields[DiscoursePostLottery::TOPIC_POST_LOTTERY_STARTS_AT]
+  end
+
+  add_to_serializer(
+    :topic_list_item,
+    :lottery_starts_at,
+    include_condition: -> do
+      SiteSetting.lottery_enabled && object.lottery_starts_at
+    end,
+  ) { object.lottery_starts_at }
+
+  # 注册自定义字段
+  register_post_custom_field_type("discourse_post_lottery", :string)
+end
