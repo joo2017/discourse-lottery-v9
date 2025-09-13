@@ -6,31 +6,20 @@
 # authors: Your Name
 # url: https://github.com/your-repo/discourse-lottery-v9
 
-# 1. 注册站点设置
 enabled_site_setting :lottery_enabled
 
-# 2. 注册前端资源 (CSS, SVG, 第三方 JS 模块)
+# 只注册我们已经创建的 SCSS 文件
 register_asset "stylesheets/common/discourse-post-lottery.scss"
-# 如果你已经创建了这些文件，可以取消注释，否则请保持注释状态以避免“找不到文件”的错误
-# register_asset "stylesheets/common/discourse-post-lottery-preview.scss"
-# register_asset "stylesheets/mobile/discourse-post-lottery.scss", :mobile
-# register_asset "stylesheets/colors.scss", :color_definitions
 
+# 注册 SVG 图标
 register_svg_icon "gift"
 register_svg_icon "trophy"
 register_svg_icon "dice"
 register_svg_icon "users"
 
-# 关键：`register_module` 必须在顶层作用域，不能在 `after_initialize` 内部
-register_module("ember-math-helpers", "ember-math-helpers/dist/modules/helpers.js", type: :es6)
+# 错误的方法已被彻底移除。不需要 register_module。
 
-# 3. 定义插件的 Ruby 模块 (可选，但推荐)
-module ::DiscoursePostLottery
-  PLUGIN_NAME = "discourse-lottery-v9"
-end
-
-# 4. 在 Discourse 初始化后运行的代码块 (目前为空)
 after_initialize do
-  # 我们所有的后端逻辑（如 Guardian 补丁, Post 扩展, 序列化器）都将在这里添加。
-  # 目前，为了确保前端能够构建成功，我们暂时将此块留空。
+  # 目前我们还没有任何后端逻辑，所以这个块是空的。
+  # 当我们开始添加后端功能时，代码将放在这里。
 end
