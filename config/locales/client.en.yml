@@ -1,0 +1,8 @@
+en:
+  js:
+    lottery:
+      builder:
+        attach: "Create Lottery"
+        title: "Create a Lottery"
+        draw_time: "Draw Time"
+        create: "Create"
