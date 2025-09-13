@@ -1,0 +1,45 @@
+.discourse-lottery-widget {
+  border: 1px solid var(--primary-low);
+  border-radius: var(--d-border-radius);
+  margin: 1em 0;
+  background: var(--secondary);
+
+  .lottery-header {
+    display: flex;
+    padding: 0.75em;
+    gap: 1em;
+    align-items: center;
+  }
+
+  .lottery-icon {
+    font-size: var(--font-up-4);
+    color: var(--tertiary);
+  }
+
+  .lottery-info .name {
+    font-size: var(--font-up-2);
+    font-weight: bold;
+  }
+
+  .lottery-section {
+    padding: 0.75em;
+    border-top: 1px solid var(--primary-low);
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+  }
+}
+
+.discourse-post-lottery-preview {
+  background: var(--secondary);
+  border: 1px dashed var(--primary-low);
+  padding: 1em;
+  margin: 1em 0;
+  border-radius: var(--d-border-radius);
+  color: var(--primary-medium);
+
+  .event-preview-title {
+    font-weight: bold;
+    margin-bottom: 0.5em;
+  }
+}
